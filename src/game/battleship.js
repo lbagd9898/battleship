@@ -1,22 +1,6 @@
-//Represents a ship placed on battleship board
-class Ship {
-  constructor(length) {
-    this.length = length;
-    this.hits = 0;
-    this.sunk = false;
-  }
-
-  //Increments when ship is hit
-  hit() {
-    this.hits += 1;
-    return this.hits;
-  }
-
-  //once ship is hit the same number of times as length, it is sunk
-  isSunk() {
-    return this.hits >= this.length;
-  }
-}
+const Ship = require("./ship.js");
+const Player = require("./player.js");
+const Space = require("./space.js");
 
 //class of each player's gameboard. each gameboard is 10x10
 class Gameboard {
@@ -55,23 +39,6 @@ class Gameboard {
       this.missedAttacks.push(space);
       return null;
     }
-  }
-}
-
-//class for each player. player's have a name and a gameboard
-class Player {
-  constructor(name) {
-    this.name = name;
-    this.gameboard = new Gameboard();
-  }
-}
-
-//class for each space on a players gameboard
-class Space {
-  constructor(x, y) {
-    this.coordinates = [x, y];
-    this.ship = null;
-    this.attacked = false;
   }
 }
 

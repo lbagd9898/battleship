@@ -1,18 +1,21 @@
-// webpack.config.js
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
   output: {
-    path: path.resolve("dist"),
+    path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
     clean: true,
   },
   mode: "development",
   devServer: {
-    static: "./dist",
+    static: {
+      directory: path.resolve(__dirname, "dist"),
+    },
     open: true,
+    hot: true,
+    watchFiles: ["src/**/*.html"], // 👈 Watch HTML for live reload
   },
   module: {
     rules: [
@@ -29,7 +32,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "public/index.html",
+      template: "./src/index.html", // ✅ make sure this matches your new HTML location
     }),
   ],
 };
