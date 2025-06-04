@@ -23,11 +23,18 @@ class Gameboard {
   //Assigns ship to provided array of space instances, adds ship to this.ships
   placeShip(ship, spaces) {
     for (let i = 0; i < spaces.length; i++) {
+      if (spaces[i].ship != null) {
+        throw new Error("space taken");
+      }
+    }
+    for (let i = 0; i < spaces.length; i++) {
       spaces[i].ship = ship;
     }
     this.ships.push(ship);
     return spaces;
   }
+  //randomly places ships on board for computer player
+  randomlyPlaceShips() {}
 
   receiveAttack(coordinates) {
     let [x, y] = coordinates;

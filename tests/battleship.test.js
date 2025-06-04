@@ -1,4 +1,4 @@
-const { Ship, Gameboard, Space } = require("../src/game/battleship");
+const { Ship, Gameboard, Space } = require("../src/game/gameboard");
 
 describe.skip("Ship", () => {
   let ship;
@@ -37,6 +37,11 @@ describe("Gameboard", () => {
       gameboard.spaces[1][0],
       gameboard.spaces[2][0],
     ];
+
+    console.log("Are any spaces already occupied?");
+    spaces.forEach((space, i) => {
+      console.log(`space[${i}] ship:`, space.ship);
+    });
     result = gameboard.placeShip(ship, spaces);
   });
 
@@ -46,7 +51,29 @@ describe("Gameboard", () => {
     });
   });
 
-  test("takes  a pair of coordinates and determines if a ship is hit or not", () => {
+  test("error thrown if ship space already taken", () => {
+    let otherShip = new Ship(2);
+    let otherSpaces = [gameboard.spaces[0][1], gameboard.spaces[0][0]];
+    expect(() => {
+      gameboard.placeShip(otherShip, otherSpaces);
+    }).toThrow("space taken");
+  });
+
+  test("if one space in ship placement is taken. all spaces remain shipless", () => {
+    let otherShip = new Ship(2);
+    let otherSpaces = [gameboard.spaces[0][1], gameboard.spaces[0][0]];
+    try {
+      gameboard.placeShip(otherShip, otherSpaces);
+    } catch (err) {
+      expect(err.message).toBe("space taken");
+    }
+
+    otherSpaces.forEach((space) => {
+      expect(space.ship).not.toBe(otherShip);
+    });
+  });
+
+  test.skip("takes  a pair of coordinates and determines if a ship is hit or not", () => {
     let hit = [1, 0];
     let miss = [4, 5];
     let hitResult = gameboard.receiveAttack(hit);

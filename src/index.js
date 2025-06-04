@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement("div");
       cell.classList.add("cell");
+      cell.dataset.board = "p1";
+      cell.dataset.x = j;
+      cell.dataset.y = i;
       cell.textContent = `${j}, ${i}`;
       p1board.append(cell);
     }
@@ -19,6 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement("div");
       cell.classList.add("cell");
+      cell.dataset.board = "p2";
+      cell.dataset.x = j;
+      cell.dataset.y = i;
       cell.textContent = `${j}, ${i}`;
       p2board.append(cell);
     }
