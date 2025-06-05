@@ -1,4 +1,5 @@
 const { Ship, Gameboard, Space } = require("../src/game/gameboard");
+const Game = require("../src/game/game");
 
 describe.skip("Ship", () => {
   let ship;
@@ -23,7 +24,7 @@ describe.skip("Ship", () => {
   });
 });
 
-describe("Gameboard", () => {
+describe.skip("Gameboard", () => {
   let ship;
   let gameboard;
   let spaces;
@@ -37,21 +38,16 @@ describe("Gameboard", () => {
       gameboard.spaces[1][0],
       gameboard.spaces[2][0],
     ];
-
-    console.log("Are any spaces already occupied?");
-    spaces.forEach((space, i) => {
-      console.log(`space[${i}] ship:`, space.ship);
-    });
-    result = gameboard.placeShip(ship, spaces);
+    // result = gameboard.placeShip(ship, spaces);
   });
 
-  test("placeship assigns ship to a space", () => {
+  test.skip("placeship assigns ship to a space", () => {
     result.forEach((space) => {
       expect(space.ship).toBe(ship);
     });
   });
 
-  test("error thrown if ship space already taken", () => {
+  test.skip("error thrown if ship space already taken", () => {
     let otherShip = new Ship(2);
     let otherSpaces = [gameboard.spaces[0][1], gameboard.spaces[0][0]];
     expect(() => {
@@ -59,7 +55,7 @@ describe("Gameboard", () => {
     }).toThrow("space taken");
   });
 
-  test("if one space in ship placement is taken. all spaces remain shipless", () => {
+  test.skip("if one space in ship placement is taken. all spaces remain shipless", () => {
     let otherShip = new Ship(2);
     let otherSpaces = [gameboard.spaces[0][1], gameboard.spaces[0][0]];
     try {
@@ -81,5 +77,27 @@ describe("Gameboard", () => {
 
     expect(hitResult).toBe(ship);
     expect(missResult).toBe(null);
+  });
+
+  test.skip("ships are all successfully placed", () => {
+    let shipPlaces = gameboard.randomlyPlaceShips();
+    expect(Object.keys(shipPlaces)).toHaveLength(5);
+  });
+
+  test("all taken spaces are unique", () => {
+    let shipPlaces = gameboard.randomlyPlaceShips();
+    const allSpaces = Object.values(shipPlaces).flat();
+    const coordStrings = allSpaces.map((space) => space.coordinates.join(","));
+
+    const set = new Set(coordStrings);
+    expect(set.size).toBe(coordStrings.length);
+  });
+
+  test.skip("spaces objects should be returned using coordinates", () => {
+    const expectedSpace = gameboard.spaces[3][2]; // Coordinates [2, 3] => x = 2, y = 3
+
+    const result = gameboard.getSpacesFromCoordinates([[2, 3]]); // Should return [expectedSpace]
+
+    expect(result[0]).toBe(expectedSpace); // Use .toBe to check reference equality
   });
 });

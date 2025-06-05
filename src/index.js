@@ -14,9 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       p1board.append(cell);
     }
   }
-
   //create grid to represent p2's board
-
   const p2board = document.querySelector("#p2board");
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
