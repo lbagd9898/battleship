@@ -7,7 +7,7 @@ class Game {
     this.computer = computer;
     this.humanBoard = this.human.gameboard;
     this.computerBoard = this.computer.gameboard;
-    this.currentPlayer = this.computer;
+    this.currentPlayer = this.human;
   }
 
   //randomly places ships for both boards and returns coordinates to implement in UI
@@ -30,7 +30,7 @@ class Game {
     let board;
     let space;
     if (this.currentPlayer === this.computer) {
-      board = this.computerBoard;
+      board = this.humanBoard;
       let row;
       let col;
       do {
@@ -41,17 +41,34 @@ class Game {
       } while (space.attacked === true);
       coordinates = space.coordinates;
     } else if (this.currentPlayer === this.human) {
-      board = this.humanBoard;
+      board = this.computerBoard;
       const [x, y] = coordinates;
       space = this.humanBoard.spaces[x][y];
       if (space.attacked === true) {
         return null;
       }
-      console.log(coordinates);
-      console.log(space);
     }
     let result = board.receiveAttack(coordinates);
+    return { result, coordinates };
+  }
+
+  playRound(coordinates = null) {
+    let result;
+    if (this.currentPlayer == this.human) {
+      result = this.playTurn(coordinates);
+    } else {
+      result = this.playTurn();
+    }
+    this.changePlayer();
     return result;
+  }
+
+  didTheyWin(gameboard) {
+    for (let i = 0; i < gameboard.ships.length; i++) {
+      console.log(gameboard.ships[i]);
+      if (gameboard.ships[i].isSunk() === false) return false;
+    }
+    return true;
   }
 
   changePlayer() {

@@ -83,7 +83,7 @@ class Gameboard {
     if (space.ship != null) {
       let ship = space.ship;
       ship.hits += 1;
-      return ship;
+      return ship.isSunk();
     } else {
       this.missedAttacks.push(space);
       return null;

@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement("div");
       cell.classList.add("cell");
+      cell.classList.add("clickable");
       cell.dataset.board = "p2";
       cell.dataset.x = j;
       cell.dataset.y = i;
@@ -46,12 +47,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let humanSpaces = takenSpaces.human;
 
-  console.log(humanSpaces);
-
   for (let i = 0; i < humanSpaces.length; i++) {
     let [x, y] = humanSpaces[i];
     let selector = `[data-board="p1"][data-x="${x}"][data-y="${y}"]`;
     let occupiedSpace = document.querySelector(selector);
-    occupiedSpace.style.backgroundColor = "red";
+    occupiedSpace.style.backgroundColor = "purple";
   }
+
+  let compSpaces = takenSpaces.computer;
+
+  for (let i = 0; i < compSpaces.length; i++) {
+    let [x, y] = compSpaces[i];
+    let selector = `[data-board="p2"][data-x="${x}"][data-y="${y}"]`;
+    let occupiedSpace = document.querySelector(selector);
+    occupiedSpace.style.backgroundColor = "purple";
+  }
+
+  const clickableCells = document.querySelectorAll(".clickable");
+  const h3 = document.querySelector("h3");
+
+  clickableCells.forEach((cell) => {
+    cell.addEventListener("click", () => {
+      let x = cell.dataset.x;
+      let y = cell.dataset.y;
+      let coord = [x, y];
+      let result = game.playRound(coord).result;
+      if (result === true) {
+        h3.textContent = "You sunk a Ship!";
+        cell.style.backgroundColor = "red";
+      } else if (result === false) {
+        h3.textContent = "Hit!";
+        cell.style.backgroundColor = "red";
+      } else if (result === null) {
+        h3.textContent = "Miss!";
+        cell.style.backgroundColor = "gray";
+      }
+      cell.style.pointerEvents = "none";
+      cell.style.cursor = "default";
+      let compRound = game.playRound();
+      result = compRound.result;
+      coord = compRound.coordinates;
+      let [i, j] = coord;
+      console.log(result);
+      console.log(coord);
+      let selector = `[data-board="p1"][data-x="${i}"][data-y="${j}"]`;
+      cell2 = document.querySelector(selector);
+      cell2.style.backgroundColor = "black";
+    });
+  });
 });

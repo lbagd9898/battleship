@@ -33,3 +33,7 @@ body {
   display: flex;
   gap: 3rem;
 }
+
+.clickable {
+  cursor: pointer;
+}

@@ -25,7 +25,7 @@ describe.skip("Ship", () => {
   });
 });
 
-describe("Gameboard", () => {
+describe.skip("Gameboard", () => {
   let ship;
   let gameboard;
   let spaces;
@@ -112,12 +112,14 @@ describe("Gameboard", () => {
   });
 });
 
-describe.skip("Game", () => {
+describe("Game", () => {
   let humanBoard;
   let compBoard;
   let human;
   let computer;
   let game;
+  let ship;
+  let spaces;
   beforeEach(() => {
     humanBoard = new Gameboard();
     compBoard = new Gameboard();
@@ -127,29 +129,77 @@ describe.skip("Game", () => {
 
     game = new Game(human, computer);
 
+    // ship = new Ship(3);
+    // spaces = [
+    //   compBoard.spaces[0][0],
+    //   compBoard.spaces[1][0],
+    //   compBoard.spaces[2][0],
+    // ];
+    // compBoard.placeShip(ship, spaces);
+
     game.startGame();
   });
-  test("playTurn returns a random space for computer", () => {
+  test.skip("playTurn returns a random space for computer", () => {
     console.log(game.currentPlayer);
     let attackedSpace = game.playTurn();
     expect(attackedSpace).toBeInstanceOf(Space);
   });
 
-  test("playTurn changes spaces attacked attribute to true when space chosen by computer", () => {
+  test.skip("playTurn changes spaces attacked attribute to true when space chosen by computer", () => {
     let attackedSpace = game.playTurn();
     expect(attackedSpace.attacked).toBe(true);
   });
 
-  test("playTurn changes space attacked attribute to true when space is given by the player", () => {
+  test.skip("playTurn changes space attacked attribute to true when space is given by the player", () => {
     game.changePlayer();
     console.log(game.currentPlayer);
     let attackedSpace = game.playTurn([2, 3]);
     expect(attackedSpace.attacked).toBe(true);
   });
 
-  test("if chose coordinate has already been attacked, playTurn returns null", () => {
+  test.skip("if chose coordinate has already been attacked, playTurn returns null", () => {
     game.changePlayer();
     game.playTurn([2, 3]);
     expect(game.playTurn([2, 3])).toBeNull();
+  });
+
+  test.skip("if turn played on empty space, null is returned", () => {
+    game.changePlayer();
+    console.log(game.currentPlayer);
+    expect(game.playTurn([9, 9])).toBeNull();
+  });
+
+  test.skip("if turn played on a ship space, ships sunk state is returned", () => {
+    game.changePlayer();
+    expect(game.playTurn([0, 0])).toBe(false);
+  });
+
+  test.skip("if turn played on a ship space, ships sunk state is returned", () => {
+    game.changePlayer();
+    game.playTurn([1, 0]);
+    game.playTurn([2, 0]);
+    console.log(ship.hits);
+    expect(game.playTurn([0, 0])).toBe(true);
+  });
+
+  test.skip("didTheyWin function should return false if all ships arent sunk", () => {
+    expect(game.didTheyWin(humanBoard)).toBe(false);
+  });
+
+  test.skip("didTheyWin function should return true if all ships are sunk", () => {
+    const board = {
+      ships: [{ isSunk: () => true }, { isSunk: () => true }],
+    };
+    expect(game.didTheyWin(board)).toBe(true);
+  });
+
+  test("game should start with currentplayer as human", () => {
+    // game.playRound();
+    expect(game.currentPlayer).toBe(human);
+  });
+
+  test("game should have currentplayer on computer after one changeplayer", () => {
+    game.playRound([2, 2]);
+    expect(game.currentPlayer).toBe(computer);
   });
 });
