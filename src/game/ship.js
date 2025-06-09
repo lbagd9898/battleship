@@ -9,12 +9,14 @@ class Ship {
   //Increments when ship is hit
   hit() {
     this.hits += 1;
+    this.isSunk();
     return this.hits;
   }
 
   //once ship is hit the same number of times as length, it is sunk
   isSunk() {
-    return this.hits >= this.length;
+    this.sunk = this.hits >= this.length;
+    return this.sunk;
   }
 }
 

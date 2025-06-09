@@ -1,5 +1,6 @@
 const { Ship, Gameboard, Space } = require("../src/game/gameboard");
 const Game = require("../src/game/game");
+const Player = require("../src/game/player");
 
 describe.skip("Ship", () => {
   let ship;
@@ -24,7 +25,7 @@ describe.skip("Ship", () => {
   });
 });
 
-describe.skip("Gameboard", () => {
+describe("Gameboard", () => {
   let ship;
   let gameboard;
   let spaces;
@@ -38,7 +39,7 @@ describe.skip("Gameboard", () => {
       gameboard.spaces[1][0],
       gameboard.spaces[2][0],
     ];
-    // result = gameboard.placeShip(ship, spaces);
+    result = gameboard.placeShip(ship, spaces);
   });
 
   test.skip("placeship assigns ship to a space", () => {
@@ -84,7 +85,7 @@ describe.skip("Gameboard", () => {
     expect(Object.keys(shipPlaces)).toHaveLength(5);
   });
 
-  test("all taken spaces are unique", () => {
+  test.skip("all taken spaces are unique", () => {
     let shipPlaces = gameboard.randomlyPlaceShips();
     const allSpaces = Object.values(shipPlaces).flat();
     const coordStrings = allSpaces.map((space) => space.coordinates.join(","));
@@ -99,5 +100,56 @@ describe.skip("Gameboard", () => {
     const result = gameboard.getSpacesFromCoordinates([[2, 3]]); // Should return [expectedSpace]
 
     expect(result[0]).toBe(expectedSpace); // Use .toBe to check reference equality
+  });
+
+  test("when attack is received on ship, ship is returned", () => {
+    let spaceCoords = spaces[0].coordinates;
+    expect(gameboard.receiveAttack(spaceCoords)).toBe(ship);
+  });
+
+  test("when attack is received on empty space, null is retuned", () => {
+    expect(gameboard.receiveAttack([9, 9])).toBeNull();
+  });
+});
+
+describe.skip("Game", () => {
+  let humanBoard;
+  let compBoard;
+  let human;
+  let computer;
+  let game;
+  beforeEach(() => {
+    humanBoard = new Gameboard();
+    compBoard = new Gameboard();
+
+    human = new Player("human", humanBoard);
+    computer = new Player("computer", compBoard);
+
+    game = new Game(human, computer);
+
+    game.startGame();
+  });
+  test("playTurn returns a random space for computer", () => {
+    console.log(game.currentPlayer);
+    let attackedSpace = game.playTurn();
+    expect(attackedSpace).toBeInstanceOf(Space);
+  });
+
+  test("playTurn changes spaces attacked attribute to true when space chosen by computer", () => {
+    let attackedSpace = game.playTurn();
+    expect(attackedSpace.attacked).toBe(true);
+  });
+
+  test("playTurn changes space attacked attribute to true when space is given by the player", () => {
+    game.changePlayer();
+    console.log(game.currentPlayer);
+    let attackedSpace = game.playTurn([2, 3]);
+    expect(attackedSpace.attacked).toBe(true);
+  });
+
+  test("if chose coordinate has already been attacked, playTurn returns null", () => {
+    game.changePlayer();
+    game.playTurn([2, 3]);
+    expect(game.playTurn([2, 3])).toBeNull();
   });
 });

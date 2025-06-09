@@ -69,7 +69,6 @@ class Gameboard {
         console.log(error.message, j);
       }
     }
-    console.log(shipPlaces);
     return shipPlaces;
   }
 
@@ -82,7 +81,9 @@ class Gameboard {
     let space = this.spaces[x][y];
     space.attacked = true;
     if (space.ship != null) {
-      return space.ship;
+      let ship = space.ship;
+      ship.hits += 1;
+      return ship;
     } else {
       this.missedAttacks.push(space);
       return null;
