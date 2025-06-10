@@ -43,7 +43,7 @@ class Game {
     } else if (this.currentPlayer === this.human) {
       board = this.computerBoard;
       const [x, y] = coordinates;
-      space = this.humanBoard.spaces[x][y];
+      space = board.spaces[x][y];
       if (space.attacked === true) {
         return null;
       }
@@ -63,10 +63,27 @@ class Game {
     return result;
   }
 
+  // didTheyWin(gameboard) {
+  //   for (let i = 0; i < gameboard.ships.length; i++) {
+  //     if (gameboard.ships[i].isSunk() === false) return false;
+  //   }
+  //   return true;
+  // }
+
   didTheyWin(gameboard) {
+    console.log("Checking win state:");
     for (let i = 0; i < gameboard.ships.length; i++) {
-      console.log(gameboard.ships[i]);
-      if (gameboard.ships[i].isSunk() === false) return false;
+      const ship = gameboard.ships[i];
+      console.log(`Ship ${i}:`, ship);
+
+      if (!ship) {
+        console.warn(`Skipping null or undefined ship at index ${i}`);
+        continue; // prevents .isSunk() call on a null/undefined value
+      }
+
+      if (!ship.isSunk()) {
+        return false;
+      }
     }
     return true;
   }
