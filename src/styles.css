@@ -20,6 +20,7 @@ body {
   padding: 1px;
   height: 2rem;
   width: 2rem;
+  z-index: 1;
 }
 
 .playerDiv {
@@ -169,4 +170,8 @@ button:disabled {
 #shipyard {
   display: flex;
   gap: 1rem;
+}
+
+.dragenter {
+  background-color: purple !important;
 }

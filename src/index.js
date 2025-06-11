@@ -7,10 +7,6 @@ import { dragAndDrop } from "./dragDrop";
 let humanBoard, compBoard, human, computer, game, takenSpaces;
 
 document.addEventListener("DOMContentLoaded", () => {
-  //dragability implementation
-  const ship5 = document.querySelector("#ship5");
-  ship5.addEventListener("dragstart", dragAndDrop(event));
-
   //create grid to represent humans's board
   const p1board = document.querySelector("#p1board");
   for (let i = 0; i < 10; i++) {
@@ -20,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.dataset.board = "p1";
       cell.dataset.x = j;
       cell.dataset.y = i;
-      cell.textContent = `${j}, ${i}`;
       p1board.append(cell);
     }
   }
@@ -34,10 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.dataset.board = "p2";
       cell.dataset.x = j;
       cell.dataset.y = i;
-      cell.textContent = `${j}, ${i}`;
       p2board.append(cell);
     }
   }
+
+  //dragability implementation
+  dragAndDrop();
 
   //game logic pieces instantiated
   humanBoard = new Gameboard();
