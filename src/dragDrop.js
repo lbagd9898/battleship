@@ -1,32 +1,31 @@
 export function dragAndDrop() {
-  const ship5 = document.querySelector("#ship5");
   const ships = document.querySelectorAll(".ship");
   const p1cells = Array.from(
     document.querySelectorAll(".cell[data-board='p1']")
   );
   const board = document.querySelector("#p1board");
+  let currentShipsID = null;
+  const lastActiveCell = [];
 
   ships.forEach((ship) => {
-    ship.addEventListener("dragstart", (event) => {
-      console.log(event);
+    ship.addEventListener("dragstart", (e) => {
+      currentShipsID = e.target.id;
+      console.log(e);
     });
   });
-
-  ship5.addEventListener("dragstart", (event) => {
-    console.log(event);
-    console.log(p1cells);
-  });
-
-  let lastActiveCell = null;
 
   board.addEventListener("dragover", (e) => {
     e.preventDefault();
 
+    //Variable stores length of ship / how many spaces to higlight
+    let shipLength = Number(currentShipsID.slice(-1));
+    console.log(shipLength);
+
+    //gets current coordinates of the mouse
     const x = e.clientX;
     const y = e.clientY;
 
-    let highlightedCells = [];
-
+    //figurees out which cell the mouse is currently over
     const activeCell = p1cells.find((cell) => {
       const rect = cell.getBoundingClientRect();
       return (
@@ -34,32 +33,45 @@ export function dragAndDrop() {
       );
     });
 
-    //generate all highlighted cells in x-direction
+    //list that will contain cell nodes we need to highlight
+    let highlightedCells = [];
 
-    console.log(activeCell);
-
-    let activeCellX = activeCell.dataset.x;
-    let activeCellY = activeCell.dataset.y;
-
-    console.log(activeCellX, activeCellY);
-
-    if (activeCell !== lastActiveCell) {
-      if (lastActiveCell) {
-        lastActiveCell.classList.remove("dragenter");
+    if (highlightedCells !== lastActiveCell) {
+      //if lastactivecell list is empty, make sure all cells get unhighlighted
+      if (lastActiveCell != []) {
+        for (let i = 0; i < lastActiveCell.length; i++) {
+          lastActiveCell[i].classList.remove("dragenter");
+        }
       }
-
       if (activeCell) {
-        activeCell.classList.add("dragenter");
+        //generate all highlighted cells in x-direction
+        let activeCellX = activeCell.dataset.x;
+        let activeCellY = activeCell.dataset.y;
+        for (let i = 0; i < shipLength; i++) {
+          let coordX = Number(activeCellX) - i;
+          let adjCell = document.querySelector(
+            `div[data-x="${coordX}"][data-y="${activeCellY}"]`
+          );
+          if (adjCell) {
+            highlightedCells.push(adjCell);
+          }
+        }
+        for (let i = 0; i < highlightedCells.length; i++)
+          highlightedCells[i].classList.add("dragenter");
       }
-      lastActiveCell = activeCell;
+      //replaces lastactivecell with highlightedcells for when curor moves
+      lastActiveCell.length = 0;
+      lastActiveCell.push(...highlightedCells);
     }
   });
 
   //when leaving board container, remove highlight
   board.addEventListener("dragleave", (e) => {
-    if (lastActiveCell) {
-      lastActiveCell.classList.remove("dragenter");
-      lastActiveCell = null;
+    if (lastActiveCell != []) {
+      for (let i = 0; i < lastActiveCell.length; i++) {
+        lastActiveCell[i].classList.remove("dragenter");
+      }
+      lastActiveCell.length = 0;
     }
   });
 }
