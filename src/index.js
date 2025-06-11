@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   //functionality for reset button
-  const button = document.querySelector("button");
+  const button = document.querySelector("#start-over");
   button.addEventListener("click", resetGame);
 
   const clickableCells = document.querySelectorAll(".clickable");

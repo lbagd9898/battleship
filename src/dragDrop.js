@@ -3,17 +3,41 @@ export function dragAndDrop() {
   const p1cells = Array.from(
     document.querySelectorAll(".cell[data-board='p1']")
   );
+  //global variables used
   const board = document.querySelector("#p1board");
   let currentShipsID = null;
   const lastActiveCell = [];
 
-  ships.forEach((ship) => {
-    ship.addEventListener("dragstart", (e) => {
-      currentShipsID = e.target.id;
-      console.log(e);
+  const rotate = document.querySelector("#rotate");
+
+  //global variable for rotate button
+  let horizontal = true;
+
+  //rotate button functionality
+  rotate.addEventListener("click", () => {
+    horizontal = !horizontal;
+    console.log(horizontal);
+    ships.forEach((ship) => {
+      ship.classList.toggle("vertical", !horizontal);
     });
   });
 
+  //eventlistener for dragability of each ship
+  ships.forEach((ship) => {
+    ship.addEventListener("dragstart", (e) => {
+      //sets current ship's id so we know how long it is
+      currentShipsID = e.target.id;
+      console.log(e);
+
+      //makes drag ghose invisible
+      const img = new Image();
+      img.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+
+      e.dataTransfer.setDragImage(img, 0, 0);
+    });
+  });
+
+  //board listens for when ship is dragged over it
   board.addEventListener("dragover", (e) => {
     e.preventDefault();
 
@@ -47,11 +71,19 @@ export function dragAndDrop() {
         //generate all highlighted cells in x-direction
         let activeCellX = activeCell.dataset.x;
         let activeCellY = activeCell.dataset.y;
+        let adjCell;
         for (let i = 0; i < shipLength; i++) {
-          let coordX = Number(activeCellX) - i;
-          let adjCell = document.querySelector(
-            `div[data-x="${coordX}"][data-y="${activeCellY}"]`
-          );
+          if (horizontal) {
+            let coordX = Number(activeCellX) - i;
+            adjCell = document.querySelector(
+              `div[data-x="${coordX}"][data-y="${activeCellY}"]`
+            );
+          } else {
+            let coordY = Number(activeCellY) + i;
+            adjCell = document.querySelector(
+              `div[data-x="${activeCellX}"][data-y="${coordY}"]`
+            );
+          }
           if (adjCell) {
             highlightedCells.push(adjCell);
           }
