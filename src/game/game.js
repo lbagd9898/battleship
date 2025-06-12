@@ -11,18 +11,39 @@ class Game {
   }
 
   //randomly places ships for both boards and returns coordinates to implement in UI
-  startGame() {
+  // startGame() {
+  //   const shipLocations = {};
+  //   const humanShipSpaces = this.humanBoard.randomlyPlaceShips();
+  //   const computerShipSpaces = this.computerBoard.randomlyPlaceShips();
+  //   const humanShipCoords = Object.values(humanShipSpaces)
+  //     .flat()
+  //     .map((space) => space.coordinates);
+  //   const computerShipCoords = Object.values(computerShipSpaces)
+  //     .flat()
+  //     .map((space) => space.coordinates);
+  //   shipLocations.human = humanShipCoords;
+  //   shipLocations.computer = computerShipCoords;
+  //   console.log(shipLocations);
+  //   return shipLocations;
+  // }
+
+  startGame(shipPlaces) {
     const shipLocations = {};
-    const humanShipSpaces = this.humanBoard.randomlyPlaceShips();
     const computerShipSpaces = this.computerBoard.randomlyPlaceShips();
-    const humanShipCoords = Object.values(humanShipSpaces)
-      .flat()
-      .map((space) => space.coordinates);
     const computerShipCoords = Object.values(computerShipSpaces)
       .flat()
       .map((space) => space.coordinates);
-    shipLocations.human = humanShipCoords;
     shipLocations.computer = computerShipCoords;
+    for (const [shipID, coordinates] of Object.entries(shipPlaces)) {
+      let shipLength = Number(shipID.slice(-1));
+      console.log(shipLength);
+      const ship = new Ship(shipLength);
+      console.log(ship);
+      console.log(coordinates);
+      let spaces = this.humanBoard.getSpacesFromCoordinates(coordinates);
+      humanBoard.placeShip(ship, spaces);
+    }
+    console.log(shipLocations);
     return shipLocations;
   }
 
@@ -63,13 +84,6 @@ class Game {
     return result;
   }
 
-  // didTheyWin(gameboard) {
-  //   for (let i = 0; i < gameboard.ships.length; i++) {
-  //     if (gameboard.ships[i].isSunk() === false) return false;
-  //   }
-  //   return true;
-  // }
-
   didTheyWin(gameboard) {
     console.log("Checking win state:");
     for (let i = 0; i < gameboard.ships.length; i++) {
@@ -93,5 +107,43 @@ class Game {
       this.currentPlayer === this.human ? this.computer : this.human;
   }
 }
+
+let humanBoard, compBoard, human, computer, game;
+
+const obj = {
+  ship5: [
+    [6, 3],
+    [5, 3],
+    [4, 3],
+    [3, 3],
+    [2, 3],
+  ],
+  ship4: [
+    [7, 8],
+    [6, 8],
+    [5, 8],
+    [4, 8],
+  ],
+  "ship1-3": [
+    [7, 5],
+    [6, 5],
+    [5, 5],
+  ],
+  "ship2-3": [
+    [7, 0],
+    [6, 0],
+    [5, 0],
+  ],
+  ship2: [
+    [2, 5],
+    [1, 5],
+  ],
+};
+humanBoard = new Gameboard();
+compBoard = new Gameboard();
+human = new Player("human", humanBoard);
+computer = new Player("computer", compBoard);
+game = new Game(human, computer);
+game.startGame(obj);
 
 module.exports = Game;

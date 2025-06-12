@@ -15,8 +15,31 @@ class Gameboard {
     for (let i = 0; i < 10; i++) {
       this.spaces[i] = [];
       for (let j = 0; j < 10; j++) {
-        this.spaces[i][j] = new Space(i, j);
+        this.spaces[i][j] = new Space(j, i);
       }
+    }
+  }
+
+  printBoard() {
+    for (let y = 0; y < 10; y++) {
+      let rowStr = "";
+      for (let x = 0; x < 10; x++) {
+        const space = this.spaces[y][x];
+        if (space.attacked) {
+          if (space.ship) {
+            rowStr += "X "; // hit ship
+          } else {
+            rowStr += "O "; // missed attack
+          }
+        } else {
+          if (space.ship) {
+            rowStr += "S "; // ship not attacked
+          } else {
+            rowStr += ". "; // empty space
+          }
+        }
+      }
+      console.log(rowStr);
     }
   }
 
@@ -78,7 +101,7 @@ class Gameboard {
 
   receiveAttack(coordinates) {
     let [x, y] = coordinates;
-    let space = this.spaces[x][y];
+    let space = this.spaces[y][x];
     space.attacked = true;
     if (space.ship != null) {
       let ship = space.ship;
@@ -90,5 +113,10 @@ class Gameboard {
     }
   }
 }
+
+const board = new Gameboard();
+board.printBoard();
+let test = board.getSpacesFromCoordinates([[2, 3]]);
+console.log(test);
 
 module.exports = { Ship, Gameboard, Space };
