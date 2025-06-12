@@ -37,6 +37,8 @@ export function dragAndDrop() {
     });
   });
 
+  let highlightedCells = [];
+
   //board listens for when ship is dragged over it
   board.addEventListener("dragover", (e) => {
     e.preventDefault();
@@ -58,7 +60,7 @@ export function dragAndDrop() {
     });
 
     //list that will contain cell nodes we need to highlight
-    let highlightedCells = [];
+    highlightedCells = [];
 
     if (highlightedCells !== lastActiveCell) {
       //if lastactivecell list is empty, make sure all cells get unhighlighted
@@ -91,7 +93,7 @@ export function dragAndDrop() {
         for (let i = 0; i < highlightedCells.length; i++)
           highlightedCells[i].classList.add("dragenter");
       }
-      //replaces lastactivecell with highlightedcells for when curor moves
+      //replaces lastactivecell with highlightedcells for when cursor moves
       lastActiveCell.length = 0;
       lastActiveCell.push(...highlightedCells);
     }
@@ -105,5 +107,10 @@ export function dragAndDrop() {
       }
       lastActiveCell.length = 0;
     }
+  });
+
+  board.addEventListener("drop", (e) => {
+    e.preventDefault();
+    console.log("dropped");
   });
 }
