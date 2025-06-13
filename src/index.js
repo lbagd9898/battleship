@@ -6,9 +6,12 @@ import { dragAndDrop } from "./dragDrop";
 
 let humanBoard, compBoard, human, computer, game, takenSpaces;
 
+//reset button needs to be accessed in both functions
+const button = document.querySelector("#start-over");
 // Moved everything before dragAndDrop into DOMContentLoaded
-
 document.addEventListener("DOMContentLoaded", async () => {
+  //mutes hover effect until game is configured
+  document.body.classList.add("no-hover");
   // Create human grid
   const p1board = document.querySelector("#p1board");
   for (let i = 0; i < 10; i++) {
@@ -35,6 +38,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  button.addEventListener("click", resetGame);
+
   // Wait for drag-and-drop to finish before starting game
   try {
     const placedShips = await dragAndDrop();
@@ -46,6 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function startGame(placedShips) {
+  //unmutes hover effect
+  document.body.classList.remove("no-hover");
+  console.log("game started");
   humanBoard = new Gameboard();
   compBoard = new Gameboard();
   human = new Player("human", humanBoard);
@@ -54,20 +62,21 @@ async function startGame(placedShips) {
   takenSpaces = game.startGame(placedShips);
 
   //paints computerboard spaces purple to ensure accuracy
-  let compSpaces = takenSpaces.computer;
-  for (let i = 0; i < compSpaces.length; i++) {
-    let [x, y] = compSpaces[i];
-    let selector = `[data-board="p2"][data-x="${x}"][data-y="${y}"]`;
-    let occupiedSpace = document.querySelector(selector);
-    occupiedSpace.style.backgroundColor = "purple";
-  }
-
-  const button = document.querySelector("#start-over");
-  button.addEventListener("click", resetGame);
+  // let compSpaces = takenSpaces.computer;
+  // for (let i = 0; i < compSpaces.length; i++) {
+  //   let [x, y] = compSpaces[i];
+  //   let selector = `[data-board="p2"][data-x="${x}"][data-y="${y}"]`;
+  //   let occupiedSpace = document.querySelector(selector);
+  //   occupiedSpace.style.backgroundColor = "purple";
+  // }
 
   const clickableCells = document.querySelectorAll(".clickable");
   const h3 = document.querySelector("h3");
   const h2 = document.querySelector("#turn");
+
+  h2.textContent = "Ready for Battle!";
+
+  h3.textContent = "Click a cell to begin.";
 
   clickableCells.forEach((cell) => {
     cell.addEventListener("click", async () => {
@@ -93,8 +102,7 @@ async function startGame(placedShips) {
         bgColor = "red";
         let win = game.didTheyWin(compBoard);
         if (win) {
-          alert("You won!");
-          resetGame();
+          alert(winner("You"));
         }
       } else if (result === false) {
         message = "Hit!";
@@ -135,8 +143,7 @@ async function startGame(placedShips) {
           bgColor = "red";
           let win = game.didTheyWin(humanBoard);
           if (win) {
-            alert("Computer won!");
-            resetGame();
+            winner("Computer");
           }
         } else if (compResult === false) {
           message = "Hit!";
@@ -169,49 +176,17 @@ async function startGame(placedShips) {
     });
   });
 
-  function resetGame() {
-    humanBoard = new Gameboard();
-    compBoard = new Gameboard();
-    human = new Player("human", humanBoard);
-    computer = new Player("computer", compBoard);
-    game = new Game(human, computer);
-    takenSpaces = game.startGame();
-
-    const clickableCells = document.querySelectorAll(".clickable");
-    clickableCells.forEach((cell) => {
-      cell.classList.remove("clicked");
-      cell.style.pointerEvents = "auto";
-      cell.style.cursor = "pointer";
-    });
-
-    const cells = document.querySelectorAll(".cell");
-    cells.forEach((cell) => {
-      cell.style.backgroundColor = "";
-    });
-
-    const h2 = document.querySelector("#turn");
-    const h3 = document.querySelector("h3");
-    h2.textContent = "Your turn!";
-    h3.textContent = "Click a cell to begin.";
-
-    let humanSpaces = takenSpaces.human;
-    for (let i = 0; i < humanSpaces.length; i++) {
-      let [x, y] = humanSpaces[i];
-      let selector = `[data-board="p1"][data-x="${x}"][data-y="${y}"]`;
-      let occupiedSpace = document.querySelector(selector);
-      occupiedSpace.style.backgroundColor = "purple";
-    }
-
-    let compSpaces = takenSpaces.computer;
-    for (let i = 0; i < compSpaces.length; i++) {
-      let [x, y] = compSpaces[i];
-      let selector = `[data-board="p2"][data-x="${x}"][data-y="${y}"]`;
-      let occupiedSpace = document.querySelector(selector);
-      occupiedSpace.style.backgroundColor = "purple";
-    }
-  }
-
   function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+}
+
+function winner(winner) {
+  alert(`${winner} won!`);
+  resetGame();
+}
+
+//reloads page when reset button is set
+function resetGame() {
+  location.reload();
 }

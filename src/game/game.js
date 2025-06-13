@@ -10,23 +10,7 @@ class Game {
     this.currentPlayer = this.human;
   }
 
-  //randomly places ships for both boards and returns coordinates to implement in UI
-  // startGame() {
-  //   const shipLocations = {};
-  //   const humanShipSpaces = this.humanBoard.randomlyPlaceShips();
-  //   const computerShipSpaces = this.computerBoard.randomlyPlaceShips();
-  //   const humanShipCoords = Object.values(humanShipSpaces)
-  //     .flat()
-  //     .map((space) => space.coordinates);
-  //   const computerShipCoords = Object.values(computerShipSpaces)
-  //     .flat()
-  //     .map((space) => space.coordinates);
-  //   shipLocations.human = humanShipCoords;
-  //   shipLocations.computer = computerShipCoords;
-  //   console.log(shipLocations);
-  //   return shipLocations;
-  // }
-
+  //randomly saves computer ship spaces and saves shipspaces from human's placed ships
   startGame(shipPlaces) {
     const shipLocations = {};
     const computerShipSpaces = this.computerBoard.randomlyPlaceShips();
@@ -38,10 +22,11 @@ class Game {
       let shipLength = Number(shipID.slice(-1));
       console.log(shipLength);
       const ship = new Ship(shipLength);
-      console.log(ship);
+      // console.log(ship);
       console.log(coordinates);
       let spaces = this.humanBoard.getSpacesFromCoordinates(coordinates);
       humanBoard.placeShip(ship, spaces);
+      console.log(ship, spaces);
     }
     console.log(shipLocations);
     return shipLocations;
